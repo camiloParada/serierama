@@ -2,7 +2,7 @@ import { registerAs } from '@nestjs/config';
 
 export default registerAs('config', () => {
   return {
-    database1: {
+    database: {
       host: process.env.TYPEORM_HOST,
       dbName: process.env.TYPEORM_DATABASE,
       port: parseInt(process.env.TYPEORM_PORT, 10),
@@ -13,5 +13,8 @@ export default registerAs('config', () => {
       migrationsDir: process.env.TYPEORM_MIGRATIONS_DIR,
     },
     jwtSecret: process.env.JWT_SECRET,
+    tmdb: {
+      apiKey: process.env.TMBD_API_KEY,
+    },
   };
 });
