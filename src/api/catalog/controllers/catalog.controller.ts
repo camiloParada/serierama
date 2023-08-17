@@ -7,6 +7,7 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 
 import { CatalogService } from '../services/catalog.service';
@@ -17,16 +18,21 @@ import {
 import { CreateMovieFavoriteDto } from '../dtos/movie-favorite.dto';
 import { CreateMovieNoteDto, UpdateMovieNoteDto } from '../dtos/movie-note.dto';
 import { QueryParams } from 'src/common/interfaces/query.interface';
+import { JwtAuthGuard } from 'src/api/auth/guards/jwt-auth.guard';
+import { Public } from 'src/api/auth/decorators/public.decorator';
 
+@UseGuards(JwtAuthGuard)
 @Controller('catalog')
 export class CatalogController {
   constructor(private catalogService: CatalogService) {}
 
+  @Public()
   @Get()
   getMovies(@Query() query: QueryParams) {
     return this.catalogService.getMovies(query);
   }
 
+  @Public()
   @Get('search')
   findMovie(@Query() query: QueryParams) {
     return this.catalogService.findMovie(query);
