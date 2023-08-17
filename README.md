@@ -1,12 +1,12 @@
 # Serierama (backend)
 Movies and series catalog
 
-Requerimientos mínimos
+Minimum Requirements
 
-- Node versión 16
+- Node version 16
 
-Guía de Instalación
+Installation Guide
 
-1. Ejecutar el comando ```npm install```
-2. Ejecutar las migraciones con el comando ```npm run migrations:run```
-3. Ejecutar el comando ```npm run start:dev``` para levantar el server
+1. Run the command ```npm install```
+2. Run the migrations with the command ```npm run migrations:run```
+3. Run the command ```npm run start:dev``` to start the server
