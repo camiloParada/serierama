@@ -14,6 +14,7 @@ export default registerAs('config', () => {
     },
     jwt: {
       secret: process.env.JWT_SECRET,
+      expiration: process.env.JWT_TIME_EXPIRATION,
       usernameField: process.env.JWT_USERNAME_FIELD,
       passwordField: process.env.JWT_PASSWORD_FIELD,
     },

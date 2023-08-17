@@ -7,7 +7,7 @@ import {
   Post,
   Put,
   Query,
-  Req,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 
@@ -34,10 +34,26 @@ export class CatalogController {
     return this.catalogService.getMovies(query);
   }
 
+  @Get('info')
+  getMoviesWithLocal(
+    @Query() query: QueryParams,
+    @Request() request: UserRequest,
+  ) {
+    return this.catalogService.getMoviesWithLocal(query, request.user.id);
+  }
+
   @Public()
   @Get('search')
   findMovie(@Query() query: QueryParams) {
     return this.catalogService.findMovie(query);
+  }
+
+  @Get('search/info')
+  findMovieWithLocal(
+    @Query() query: QueryParams,
+    @Request() request: UserRequest,
+  ) {
+    return this.catalogService.findMovieWithLocal(query, request.user.id);
   }
 
   @Get(':id')
@@ -48,7 +64,7 @@ export class CatalogController {
   @Post('rate')
   rateMovie(
     @Body() payload: CreateMovieRatingDto,
-    @Req() request: UserRequest,
+    @Request() request: UserRequest,
   ) {
     return this.catalogService.rateMovie(payload, request.user.id);
   }
@@ -56,7 +72,7 @@ export class CatalogController {
   @Post('like')
   likeMovie(
     @Body() payload: CreateMovieFavoriteDto,
-    @Req() request: UserRequest,
+    @Request() request: UserRequest,
   ) {
     return this.catalogService.likeMovie(payload, request.user.id);
   }
@@ -64,7 +80,7 @@ export class CatalogController {
   @Post('note')
   writeNoteAboutMovie(
     @Body() payload: CreateMovieNoteDto,
-    @Req() request: UserRequest,
+    @Request() request: UserRequest,
   ) {
     return this.catalogService.writeNoteAboutMovie(payload, request.user.id);
   }
@@ -73,7 +89,7 @@ export class CatalogController {
   updateRateMovie(
     @Param('id', ParseIntPipe) id: number,
     @Body() payload: UpdateMovieRatingDto,
-    @Req() request: UserRequest,
+    @Request() request: UserRequest,
   ) {
     return this.catalogService.updateRateMovie(id, payload, request.user.id);
   }
@@ -82,7 +98,7 @@ export class CatalogController {
   updateNoteAboutMovie(
     @Param('id', ParseIntPipe) id: number,
     @Body() payload: UpdateMovieNoteDto,
-    @Req() request: UserRequest,
+    @Request() request: UserRequest,
   ) {
     return this.catalogService.updateNoteAboutMovie(
       id,

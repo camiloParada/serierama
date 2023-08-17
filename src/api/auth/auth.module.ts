@@ -20,7 +20,7 @@ import config from 'src/config';
         return {
           secret: configService.jwt.secret,
           signOptions: {
-            expiresIn: '30m',
+            expiresIn: configService.jwt.expiration,
           },
         };
       },

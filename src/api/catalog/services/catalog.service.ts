@@ -40,8 +40,37 @@ export class CatalogService {
           releaseDate: movie.release_date,
           voteAverage: movie.vote_average,
           overview: movie.overview,
+          myRate: '',
+          myNotes: '',
+          isMyFavorite: '',
         };
       }),
+    };
+  }
+
+  async getMoviesWithLocal(query: QueryParams, user: string) {
+    const movies = await this.tmdbService.getPopularMovies(query.page);
+
+    let results = movies.results.map(async (movie: Movie) => {
+      return {
+        id: movie.id,
+        title: movie.title,
+        poster: movie.poster_path,
+        releaseDate: movie.release_date,
+        voteAverage: movie.vote_average,
+        overview: movie.overview,
+        myRate: (await this.findMovieRatingLocal(movie.id, user))?.rating,
+        myNotes: (await this.findMovieNoteLocal(movie.id, user))?.note,
+        isMyFavorite: (await this.findMovieFavoriteLocal(movie.id, user))
+          ?.status,
+      };
+    });
+
+    results = await Promise.all(results);
+
+    return {
+      page: movies.page,
+      results,
     };
   }
 
@@ -60,6 +89,32 @@ export class CatalogService {
           overview: movie.overview,
         };
       }),
+    };
+  }
+
+  async findMovieWithLocal(query: QueryParams, user: string) {
+    const movies = await this.tmdbService.searchMovie(query.search);
+
+    let results = movies.results.map(async (movie: Movie) => {
+      return {
+        id: movie.id,
+        title: movie.title,
+        poster: movie.poster_path,
+        releaseDate: movie.release_date,
+        voteAverage: movie.vote_average,
+        overview: movie.overview,
+        myRate: (await this.findMovieRatingLocal(movie.id, user))?.rating,
+        myNotes: (await this.findMovieNoteLocal(movie.id, user))?.note,
+        isMyFavorite: (await this.findMovieFavoriteLocal(movie.id, user))
+          ?.status,
+      };
+    });
+
+    results = await Promise.all(results);
+
+    return {
+      page: movies.page,
+      results,
     };
   }
 
