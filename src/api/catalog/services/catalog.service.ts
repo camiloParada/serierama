@@ -67,27 +67,36 @@ export class CatalogService {
     return this.tmdbService.findMovie(id);
   }
 
-  findMovieRatingLocal(id: number) {
-    return this.movieRatingRepo.findOne({
-      where: { id },
-    });
+  findMovieRatingLocal(id: number, user: string) {
+    return this.movieRatingRepo
+      .createQueryBuilder('movieRating')
+      .where({ id })
+      .andWhere({ user: { id: user } })
+      .getOne();
   }
 
-  findMovieFavoriteLocal(id: number) {
-    return this.movieFavoriteRepo.findOne({
-      where: { id },
-    });
+  findMovieFavoriteLocal(id: number, user: string) {
+    return this.movieFavoriteRepo
+      .createQueryBuilder('movieFavorite')
+      .where({ id })
+      .andWhere({ user: { id: user } })
+      .getOne();
   }
 
-  findMovieNoteLocal(id: number) {
-    return this.movieNoteRepo.findOne({
-      where: { id },
-    });
+  findMovieNoteLocal(id: number, user: string) {
+    return this.movieNoteRepo
+      .createQueryBuilder('movieNote')
+      .where({ id })
+      .andWhere({ user: { id: user } })
+      .getOne();
   }
 
-  rateMovie(data: CreateMovieRatingDto) {
+  rateMovie(data: CreateMovieRatingDto, user: string) {
     try {
-      const newMovieRate = this.movieRatingRepo.create(data);
+      const newMovieRate = this.movieRatingRepo.create({
+        ...data,
+        user,
+      });
       return this.movieRatingRepo.save(newMovieRate);
     } catch (error) {
       throw new HttpException(
@@ -97,9 +106,12 @@ export class CatalogService {
     }
   }
 
-  async likeMovie(data: CreateMovieFavoriteDto) {
+  async likeMovie(data: CreateMovieFavoriteDto, user: string) {
     try {
-      const movieFavoriteExist = await this.findMovieFavoriteLocal(data.id);
+      const movieFavoriteExist = await this.findMovieFavoriteLocal(
+        data.id,
+        user,
+      );
 
       if (movieFavoriteExist) {
         const newStatus =
@@ -109,9 +121,13 @@ export class CatalogService {
         return this.movieFavoriteRepo.save(movieFavoriteExist);
       }
 
-      const newMovieFavorite = this.movieFavoriteRepo.create(data);
+      const newMovieFavorite = this.movieFavoriteRepo.create({
+        ...data,
+        user,
+      });
       return this.movieFavoriteRepo.save(newMovieFavorite);
     } catch (error) {
+      console.error(error);
       throw new HttpException(
         `There was an error trying to save register`,
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -119,9 +135,12 @@ export class CatalogService {
     }
   }
 
-  writeNoteAboutMovie(data: CreateMovieNoteDto) {
+  writeNoteAboutMovie(data: CreateMovieNoteDto, user: string) {
     try {
-      const newMovieNote = this.movieNoteRepo.create(data);
+      const newMovieNote = this.movieNoteRepo.create({
+        ...data,
+        user,
+      });
       return this.movieNoteRepo.save(newMovieNote);
     } catch (error) {
       throw new HttpException(
@@ -131,8 +150,12 @@ export class CatalogService {
     }
   }
 
-  async updateRateMovie(id: number, changes: UpdateMovieRatingDto) {
-    const movieRate = await this.findMovieRatingLocal(id);
+  async updateRateMovie(
+    id: number,
+    changes: UpdateMovieRatingDto,
+    user: string,
+  ) {
+    const movieRate = await this.findMovieRatingLocal(id, user);
 
     if (!movieRate.id) {
       throw new HttpException(
@@ -152,10 +175,12 @@ export class CatalogService {
     }
   }
 
-  async updateNoteAboutMovie(id: number, changes: UpdateMovieNoteDto) {
-    const movieNote = await this.findMovieNoteLocal(id);
-
-    console.log('movieNote.success', movieNote);
+  async updateNoteAboutMovie(
+    id: number,
+    changes: UpdateMovieNoteDto,
+    user: string,
+  ) {
+    const movieNote = await this.findMovieNoteLocal(id, user);
 
     if (!movieNote.id) {
       throw new HttpException(

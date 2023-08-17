@@ -1,12 +1,12 @@
 import { PartialType } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateMovieFavoriteDto {
   @IsNotEmpty()
   @IsNumber()
   id: number;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   user: string;
 }

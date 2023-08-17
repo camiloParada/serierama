@@ -1,5 +1,5 @@
 import { PartialType } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateMovieRatingDto {
   @IsNotEmpty()
@@ -10,7 +10,7 @@ export class CreateMovieRatingDto {
   @IsNumber()
   rating: number;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   user: string;
 }

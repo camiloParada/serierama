@@ -7,6 +7,7 @@ import {
   Post,
   Put,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 
@@ -20,6 +21,7 @@ import { CreateMovieNoteDto, UpdateMovieNoteDto } from '../dtos/movie-note.dto';
 import { QueryParams } from 'src/common/interfaces/query.interface';
 import { JwtAuthGuard } from 'src/api/auth/guards/jwt-auth.guard';
 import { Public } from 'src/api/auth/decorators/public.decorator';
+import { UserRequest } from 'src/common/interfaces/user-request.interface';
 
 @UseGuards(JwtAuthGuard)
 @Controller('catalog')
@@ -44,33 +46,48 @@ export class CatalogController {
   }
 
   @Post('rate')
-  rateMovie(@Body() payload: CreateMovieRatingDto) {
-    return this.catalogService.rateMovie(payload);
+  rateMovie(
+    @Body() payload: CreateMovieRatingDto,
+    @Req() request: UserRequest,
+  ) {
+    return this.catalogService.rateMovie(payload, request.user.id);
   }
 
   @Post('like')
-  likeMovie(@Body() payload: CreateMovieFavoriteDto) {
-    return this.catalogService.likeMovie(payload);
+  likeMovie(
+    @Body() payload: CreateMovieFavoriteDto,
+    @Req() request: UserRequest,
+  ) {
+    return this.catalogService.likeMovie(payload, request.user.id);
   }
 
   @Post('note')
-  writeNoteAboutMovie(@Body() payload: CreateMovieNoteDto) {
-    return this.catalogService.writeNoteAboutMovie(payload);
+  writeNoteAboutMovie(
+    @Body() payload: CreateMovieNoteDto,
+    @Req() request: UserRequest,
+  ) {
+    return this.catalogService.writeNoteAboutMovie(payload, request.user.id);
   }
 
   @Put('rate/:id')
   updateRateMovie(
     @Param('id', ParseIntPipe) id: number,
     @Body() payload: UpdateMovieRatingDto,
+    @Req() request: UserRequest,
   ) {
-    return this.catalogService.updateRateMovie(id, payload);
+    return this.catalogService.updateRateMovie(id, payload, request.user.id);
   }
 
   @Put('note/:id')
   updateNoteAboutMovie(
     @Param('id', ParseIntPipe) id: number,
     @Body() payload: UpdateMovieNoteDto,
+    @Req() request: UserRequest,
   ) {
-    return this.catalogService.updateNoteAboutMovie(id, payload);
+    return this.catalogService.updateNoteAboutMovie(
+      id,
+      payload,
+      request.user.id,
+    );
   }
 }
