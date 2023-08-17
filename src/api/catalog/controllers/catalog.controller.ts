@@ -14,19 +14,27 @@ import {
   CreateMovieRatingDto,
   UpdateMovieRatingDto,
 } from '../dtos/movie-rating.dto';
-import {
-  CreateMovieFavoriteDto,
-  UpdateMovieFavoriteDto,
-} from '../dtos/movie-favorite.dto';
+import { CreateMovieFavoriteDto } from '../dtos/movie-favorite.dto';
 import { CreateMovieNoteDto, UpdateMovieNoteDto } from '../dtos/movie-note.dto';
+import { QueryParams } from 'src/common/interfaces/query.interface';
 
 @Controller('catalog')
 export class CatalogController {
   constructor(private catalogService: CatalogService) {}
 
-  @Get(':search')
-  findMovie(@Query() search: string) {
-    return this.catalogService.findMovie(search);
+  @Get()
+  getMovies(@Query() query: QueryParams) {
+    return this.catalogService.getMovies(query);
+  }
+
+  @Get('search')
+  findMovie(@Query() query: QueryParams) {
+    return this.catalogService.findMovie(query);
+  }
+
+  @Get(':id')
+  findMovieId(@Param('id', ParseIntPipe) id: number) {
+    return this.catalogService.findMovieId(id);
   }
 
   @Post('rate')
@@ -42,14 +50,6 @@ export class CatalogController {
   @Post('note')
   writeNoteAboutMovie(@Body() payload: CreateMovieNoteDto) {
     return this.catalogService.writeNoteAboutMovie(payload);
-  }
-
-  @Put('like/:id')
-  updateLikeMovie(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() payload: UpdateMovieFavoriteDto,
-  ) {
-    return this.catalogService.updateLikeMovie(id, payload);
   }
 
   @Put('rate/:id')

@@ -1,7 +1,7 @@
 import { HttpService } from '@nestjs/axios';
-import { Inject, Injectable } from '@nestjs/common';
+import { HttpException, Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
-import { lastValueFrom } from 'rxjs';
+import { catchError, lastValueFrom } from 'rxjs';
 
 import config from 'src/config';
 
@@ -19,16 +19,39 @@ export class TmdbService {
   }
 
   async getPopularMovies(page: number = 1) {
-    const response = this.httpService.get(`${this.url}/movies/popular?${page}`);
+    const response = this.httpService
+      .get(`${this.url}/movie/popular?api_key=${this.apiKey}&page=${page}`)
+      .pipe(
+        catchError((e) => {
+          throw new HttpException(e.response.data, e.response.status);
+        }),
+      );
     const result = await lastValueFrom(response);
 
     return result.data;
   }
 
   async searchMovie(search: string) {
-    const response = this.httpService.get(
-      `${this.url}/search/movie?query=${search}`,
-    );
+    const response = this.httpService
+      .get(`${this.url}/search/movie?api_key=${this.apiKey}&query=${search}`)
+      .pipe(
+        catchError((e) => {
+          throw new HttpException(e.response.data, e.response.status);
+        }),
+      );
+    const result = await lastValueFrom(response);
+
+    return result.data;
+  }
+
+  async findMovie(id: number) {
+    const response = this.httpService
+      .get(`${this.url}/movie/${id}?api_key=${this.apiKey}`)
+      .pipe(
+        catchError((e) => {
+          throw new HttpException(e.response.data, e.response.status);
+        }),
+      );
     const result = await lastValueFrom(response);
 
     return result.data;

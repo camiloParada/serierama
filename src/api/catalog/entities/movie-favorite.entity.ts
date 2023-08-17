@@ -1,5 +1,7 @@
-import { MovieStatus } from 'src/common/types/movie-status.type';
-import { Column, Entity, JoinColumn, PrimaryColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+
+import { MovieStatus } from '../../../common/types/movie-status.type';
+import { User } from '../../users/entities/user.entity';
 
 @Entity({ name: 'movie_favorites' })
 export class MovieFavorite {
@@ -13,6 +15,10 @@ export class MovieFavorite {
   })
   status: string;
 
-  @JoinColumn()
+  @ManyToOne(() => User, (user) => user, {
+    onDelete: 'CASCADE',
+    nullable: false,
+  })
+  @JoinColumn({ name: 'user_id' })
   user: string;
 }

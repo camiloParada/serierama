@@ -1,4 +1,6 @@
-import { Column, Entity, JoinColumn, PrimaryColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+
+import { User } from '../../users/entities/user.entity';
 
 @Entity({ name: 'movie_ratings' })
 export class MovieRating {
@@ -10,6 +12,10 @@ export class MovieRating {
   })
   rating: number;
 
-  @JoinColumn()
+  @ManyToOne(() => User, (user) => user, {
+    onDelete: 'CASCADE',
+    nullable: false,
+  })
+  @JoinColumn({ name: 'user_id' })
   user: string;
 }

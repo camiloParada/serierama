@@ -6,10 +6,14 @@ import { CatalogService } from './services/catalog.service';
 import { MovieRating } from './entities/movie-rating.entity';
 import { MovieFavorite } from './entities/movie-favorite.entity';
 import { MovieNote } from './entities/movie-note.entity';
+import { TmdbModule } from 'src/lib/tmdb/tmdb.module';
 
 @Module({
   controllers: [CatalogController],
-  imports: [TypeOrmModule.forFeature([MovieRating, MovieFavorite, MovieNote])],
+  imports: [
+    TypeOrmModule.forFeature([MovieRating, MovieFavorite, MovieNote]),
+    TmdbModule,
+  ],
   providers: [CatalogService],
 })
 export class CatalogModule {}
